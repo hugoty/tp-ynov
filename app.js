@@ -1,4 +1,6 @@
 const express = require("express");
+require("dotenv").config(); // Assurez-vous d'installer le package dotenv si ce n'est pas déjà fait
+
 const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
