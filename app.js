@@ -1,8 +1,8 @@
 const express = require("express");
 const helmet = require("helmet");
-const transactionRoutes = require("./routes/transactionRoutes");
-const clientRoutes = require("./routes/clientRoutes");
-const accountRoutes = require("./routes/accountRoutes");
+const transactionRoutes = require("./transaction-service/transaction-routes/transactionRoutes");
+const clientRoutes = require("./client-service/client-routes/clientRoutes");
+const accountRoutes = require("./account-service/account-routes/accountRoutes");
 
 const errorHandler = require("./middlewares/errorHandler");
 const connectDB = require("./db/database");

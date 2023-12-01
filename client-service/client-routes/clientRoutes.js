@@ -1,6 +1,6 @@
 const express = require("express");
-const clientController = require("../controllers/clientController");
-const authMiddleware = require("../middlewares/authMiddleware"); // Middleware d'authentification
+const clientController = require("../client-controller/clientController");
+const authMiddleware = require("../../middlewares/authMiddleware"); // Middleware d'authentification
 
 const router = express.Router();
 

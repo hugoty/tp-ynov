@@ -1,5 +1,5 @@
-const Transaction = require("../models/transaction");
-const Account = require("../models/account");
+const Transaction = require("../transaction-model/transaction");
+const Account = require("../../account-service/account-model/account");
 
 // Ajouter une transaction
 exports.createTransaction = async (req, res) => {

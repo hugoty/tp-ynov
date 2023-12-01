@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const ClientModel = require("../models/client"); // Utilisation de ClientModel pour référencer le modèle Mongoose
+const ClientModel = require("../client-model/client"); // Utilisation de ClientModel pour référencer le modèle Mongoose
 
 const clientController = {
   // Inscription d'un nouvel client
