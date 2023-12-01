@@ -1,9 +1,9 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const ClientModel = require("../models/client");
+const ClientModel = require("../models/client"); // Utilisation de ClientModel pour référencer le modèle Mongoose
 
 const clientController = {
-  // Inscription d'un nouvel Client
+  // Inscription d'un nouvel client
   register: async (req, res) => {
     try {
       const { nom, email, motDePasse } = req.body;
@@ -19,13 +19,12 @@ const clientController = {
 
       // Création du client
       const newClient = new ClientModel({
-        // Remarquez le changement ici, newClient au lieu de Client
         nom,
         email,
         motDePasse: hashedPassword,
       });
 
-      await newClient.save(); // Et ici, newClient au lieu de Client
+      await newClient.save();
       res.status(201).send("Client créé avec succès.");
     } catch (err) {
       res.status(500).send(err.message);
@@ -36,7 +35,7 @@ const clientController = {
   login: async (req, res) => {
     try {
       const { email, motDePasse } = req.body;
-      const client = await ClientModel.findOne({ email }); // Remarquez le changement ici, client au lieu de Client
+      const client = await ClientModel.findOne({ email });
 
       if (!client || !(await bcrypt.compare(motDePasse, client.motDePasse))) {
         return res.status(401).send("Email ou mot de passe incorrect.");
@@ -53,37 +52,45 @@ const clientController = {
     }
   },
 
-  // Récupération des informations de l'Client connecté
+  // Récupération des informations du client connecté
   getMe: async (req, res) => {
     try {
-      // L'Client est attaché à la requête dans le middleware d'authentification
-      res.json(req.Client);
+      // L'identifiant du client est attaché à la requête dans le middleware d'authentification
+      const client = await ClientModel.findById(req.clientId);
+      if (!client) {
+        return res.status(404).send("Client non trouvé.");
+      }
+      res.json(client);
     } catch (err) {
       res.status(500).send(err.message);
     }
   },
 
-  // Mise à jour du profil de l'Client
+  // Mise à jour du profil du client
   updateMe: async (req, res) => {
     try {
       const { nom, email } = req.body;
-      const Client = await Client.findByIdAndUpdate(
+      const client = await ClientModel.findByIdAndUpdate(
         req.clientId,
         { nom, email },
         { new: true }
       );
 
-      res.json(Client);
+      if (!client) {
+        return res.status(404).send("Client non trouvé.");
+      }
+
+      res.json(client);
     } catch (err) {
       res.status(500).send(err.message);
     }
   },
 
-  // Suppression du compte Client
+  // Suppression du compte client
   deleteMe: async (req, res) => {
     try {
-      await Client.findByIdAndDelete(req.clientId);
-      res.send("Compte Client supprimé.");
+      await ClientModel.findByIdAndDelete(req.clientId);
+      res.send("Compte client supprimé.");
     } catch (err) {
       res.status(500).send(err.message);
     }
