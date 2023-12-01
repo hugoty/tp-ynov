@@ -43,7 +43,7 @@ exports.deleteTransaction = async (req, res) => {
     }
 
     // Si la transaction existe, la supprimer
-    await Transaction.findByIdAndRemove(transactionId);
+    await Transaction.findByIdAndDelete(transactionId);
 
     // Mise à jour du solde du compte après la suppression de la transaction
     const account = await Account.findById(transaction.account);
