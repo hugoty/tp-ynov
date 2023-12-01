@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const Client = require("../models/client");
+const ClientModel = require("../models/client");
 
 const clientController = {
   // Inscription d'un nouvel Client
@@ -8,41 +8,42 @@ const clientController = {
     try {
       const { nom, email, motDePasse } = req.body;
 
-      // Vérifier si l'Client existe déjà
-      const clientExists = await Client.findOne({ email });
+      // Vérifier si le client existe déjà
+      const clientExists = await ClientModel.findOne({ email });
       if (clientExists) {
-        return res.status(400).send("Un Client avec cet email existe déjà.");
+        return res.status(400).send("Un client avec cet email existe déjà.");
       }
 
       // Hashage du mot de passe
       const hashedPassword = await bcrypt.hash(motDePasse, 12);
 
-      // Création de l'Client
-      const Client = new Client({
+      // Création du client
+      const newClient = new ClientModel({
+        // Remarquez le changement ici, newClient au lieu de Client
         nom,
         email,
         motDePasse: hashedPassword,
       });
 
-      await Client.save();
+      await newClient.save(); // Et ici, newClient au lieu de Client
       res.status(201).send("Client créé avec succès.");
     } catch (err) {
       res.status(500).send(err.message);
     }
   },
 
-  // Connexion de l'Client
+  // Connexion du client
   login: async (req, res) => {
     try {
       const { email, motDePasse } = req.body;
-      const Client = await Client.findOne({ email });
+      const client = await ClientModel.findOne({ email }); // Remarquez le changement ici, client au lieu de Client
 
-      if (!Client || !(await bcrypt.compare(motDePasse, Client.motDePasse))) {
+      if (!client || !(await bcrypt.compare(motDePasse, client.motDePasse))) {
         return res.status(401).send("Email ou mot de passe incorrect.");
       }
 
-      // Générer un token JWT en utilisant le secret stocké dans les variables d'environnement
-      const token = jwt.sign({ id: clientId }, process.env.JWT_SECRET, {
+      // Générer un token JWT
+      const token = jwt.sign({ id: client._id }, process.env.JWT_SECRET, {
         expiresIn: "1h",
       });
 
