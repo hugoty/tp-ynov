@@ -10,7 +10,7 @@ connectDB();
 
 app.use("/api/clients", clientRoutes);
 
-const PORT = process.env.PORT || 3000;
+const PORT = 3002;
 app.listen(PORT, () => {
   console.log(`Client service listening on port ${PORT}`);
 });

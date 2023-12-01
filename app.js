@@ -1,25 +1,22 @@
 const express = require("express");
-const helmet = require("helmet");
-const transactionRoutes = require("./transaction-service/transaction-routes/transactionRoutes");
-const clientRoutes = require("./client-service/client-routes/clientRoutes");
-const accountRoutes = require("./account-service/account-routes/accountRoutes");
-
-const errorHandler = require("./middlewares/errorHandler");
-const connectDB = require("./db/database");
-const cors = require("cors");
-require("dotenv").config();
-
-connectDB();
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
 const app = express();
-app.use(helmet());
-app.use(express.json());
-app.use(errorHandler);
-app.use(cors());
 
-app.use("/transactions", transactionRoutes);
-app.use("/accounts", accountRoutes);
-app.use("/clients", clientRoutes);
+// Proxy endpoints
+app.use(
+  "/api/accounts",
+  createProxyMiddleware({ target: "http://localhost:3001", changeOrigin: true })
+);
+app.use(
+  "/api/clients",
+  createProxyMiddleware({ target: "http://localhost:3002", changeOrigin: true })
+);
+app.use(
+  "/api/transactions",
+  createProxyMiddleware({ target: "http://localhost:3003", changeOrigin: true })
+);
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(3000, () => {
+  console.log("API Gateway running on port 3000");
+});
